@@ -18,6 +18,7 @@ train_data = train_data.dropna(how = 'any') # Null 값이 존재하는 행 제�
 train_data['document'] = train_data['document'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","")
 ## 불용어 정의
 stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
+
 ##  형태소 분석기 OKT를 사용한 토큰화 작업 (다소 시간 소요)
 okt = Okt()
 
@@ -30,14 +31,13 @@ for sentence in tqdm(train_data['document']):
 ## 리뷰 길이 분포 확인
 print('리뷰의 최대 길이 :',max(len(review) for review in tokenized_data))
 print('리뷰의 평균 길이 :',sum(map(len, tokenized_data))/len(tokenized_data))
+
 plt.hist([len(review) for review in tokenized_data], bins=50)
 plt.xlabel('length of samples')
 plt.ylabel('number of samples')
 plt.show()
 
 ## Word2Vec으로 토큰화 된 네이버 영화 리뷰 데이터 학습
-from gensim.models import Word2Vec
-
 model = Word2Vec(sentences = tokenized_data,
                  vector_size = 100,
                  window = 5,
