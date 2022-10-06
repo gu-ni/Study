@@ -1,14 +1,15 @@
-## Word2Vec 한글
-## 네이버 영화 리뷰 ###############################################################
 # %%
 import pandas as pd
 import matplotlib.pyplot as plt
 import urllib.request
-from gensim.models.word2vec import Word2Vec
+from gensim.models import Word2Vec
+from gensim.models import FastText
 from konlpy.tag import Okt
 from tqdm import tqdm
 
 # %%
+## Word2Vec, FastText 한글
+## 네이버 영화 리뷰 ###############################################################
 urllib.request.urlretrieve("https://raw.githubusercontent.com/e9t/nsmc/master/ratings.txt", filename="ratings.txt")
 train_data = pd.read_table('ratings.txt')
 
@@ -49,3 +50,14 @@ print(model.wv.vectors.shape) # 총 16,477개의 단어가 존재하며 각 단�
 
 print(model.wv.most_similar("최민식")) # 최민식과 유사한 단어들
 print(model.wv.most_similar("히어로")) # 히어로와 유사한 단어들
+
+## FastText
+model_fasttext = FastText(sentences = tokenized_data,
+                 vector_size = 100,
+                 window = 2,
+                 min_count = 1,
+                 workers = 4,
+                 sg = 0)
+
+## 완성된 임베딩 매트릭스의 크기 확인
+print(model_fasttext.wv.vectors.shape) # 총 2631개의 단어가 존재하며 각 단어는 100차원으로 구성
