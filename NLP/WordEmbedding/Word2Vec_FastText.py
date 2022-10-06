@@ -61,3 +61,6 @@ model_fasttext = FastText(sentences = tokenized_data,
 
 ## 완성된 임베딩 매트릭스의 크기 확인
 print(model_fasttext.wv.vectors.shape) # 총 2631개의 단어가 존재하며 각 단어는 100차원으로 구성
+
+print(model_fasttext.wv.most_similar("최민식")) # 최민식과 유사한 단어들
+print(model_fasttext.wv.most_similar("히어로")) # 히어로와 유사한 단어들
