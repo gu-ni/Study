@@ -4,12 +4,10 @@ GraphSAGE tutorial
 dataset : PubMed data
 
 '''
-# %%
-print("test")
-
-# %% Dataset
+# %% import
 from torch_geometric.datasets import Planetoid
 
+# %% Dataset
 dataset = Planetoid(root='.', name="Pubmed")
 data = dataset[0]
 
