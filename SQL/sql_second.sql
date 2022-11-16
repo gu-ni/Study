@@ -107,3 +107,80 @@ DROP VIEW sample_view_67;
 # 뷰를 참조하면 뷰에 등록되어 있는 SELECT 명령이 실행됨
 # 실행 결과는 일시적으로 보존되며, 뷰를 참조할 때마다 SELECT 명령이 실행됨
 # 뷰를 구성하는 SELECT 명령은 단독으로도 실행할 수 있어야함. 서브쿼리의 경우에는 뷰의 SELECT 명령으로 사용할 수 없음
+
+#31. 집합 연산
+# 합집합 : A UNION B
+SELECT * FROM sample71_a;
+SELECT * FROM sample71_b;
+
+SELECT * FROM sample71_a 
+UNION
+SELECT * FROM sample71_b;
+
+# 열 구성이 다른 테이블은 UNION으로 묶을 수 없음. but, *을 사용하지 않고 열을 따로 지정해서 맞춰주면 가능
+SELECT a FROM sample71_a
+UNION
+SELECT b FROM sample71_b
+UNION
+SELECT age FROM sample31;
+
+# UNION으로 SELECT 명령을 연결하는 경우, 가장 마지막 SELECT 명령에 대해서만 ORDER BY 구를 지정할 수 있음
+# ORDER BY 구에 지정하는 열은 별명을 붙여 이름을 일치시킨다!
+SELECT a AS c FROM sample71_a
+UNION
+SELECT b AS c FROM sample71_b ORDER BY c;
+
+# 중복을 제거하지 않고 합치기 (UNION ALL), UNION의 기본동작은 ALL이 아닌 DISTINCT
+# 중복이 없는 경우에는 UNION ALL을 사용하는 편이 좋은 성능을 보임
+SELECT * FROM sample71_a
+UNION ALL
+SELECT * FROM sample71_b;
+
+# 차집합, 교집합은 MySQL에서 지원 x
+
+#32. 테이블 결합
+# 곱집합 : 모든 경우의 수 곱 (3x3 = 9)
+
+# 교차결합(Cross Join)
+SELECT * FROM sample72_x;
+SELECT * FROM sample72_y;
+SELECT * FROM sample72_x, sample72_y;
+
+# 내부결합 : 교차결합으로 계산된 곱집합에서 원하는 조합을 검색하는 것
+SELECT * FROM 상품;
+SELECT * FROM 재고수;
+SELECT * FROM 상품, 재고수;
+
+SELECT * 
+FROM 상품, 재고수
+WHERE 상품.상품코드=재고수.상품코드;
+
+SELECT 상품.상품명, 재고수.재고수 
+FROM 상품, 재고수
+WHERE 상품.상품코드=재고수.상품코드 AND 상품.상품분류='식료품';
+
+# INNER JOIN (내부결합)
+# 위 방식은 구식
+# INNER JOIN으로 두 개 테이블을 가로로 결합
+SELECT 상품.상품명, 재고수.재고수
+FROM 상품 INNER JOIN 재고수
+ON 상품.상품코드=재고수.상품코드
+WHERE 상품.상품분류='식료품';
+
+# 내부결합을 활용한 데이터관리
+SELECT * FROM 상품2;
+
+SELECT S.상품명, M.메이커명
+FROM 상품2 S INNER JOIN 메이커 M
+ON S.메이커코드=M.메이커코드;
+
+# 자기결합(Self Join)
+SELECT S1.상품명, S2.상품명
+FROM 상품 S1 INNER JOIN 상품 S2
+ON S1.상품코드=S2.상품코드;
+
+# 외부결합 : 어느 한 쪽에만 존재하는 데이터행을 어떻게 다룰지
+SELECT 상품3.상품명, 재고수.재고수
+FROM 상품3 LEFT JOIN 재고수
+ON 상품3.상품코드=재고수.상품코드
+WHERE 상품3.상품분류='식료품';
